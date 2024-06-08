@@ -19,7 +19,16 @@ namespace SeldomArchipelago.Items
         {
             var jsonData = ModContent.GetInstance<SeldomArchipelago>().GetFileBytes("weapons.json");
             var weaponData = JsonConvert.DeserializeObject<WeaponData>(System.Text.Encoding.UTF8.GetString(jsonData));
-            WeaponIDsToModify = weaponData.weaponIDs;
+            //WeaponIDsToModify = weaponData.weaponIDs;
+            WeaponIDsToModify = new List<int>();
+            foreach (var weaponName in weaponData.weaponNames)
+            {
+                int itemID = GetItemIDByName(weaponName);
+                if (itemID != 0)
+                {
+                    WeaponIDsToModify.Add(itemID);
+                }
+            }
             return WeaponIDsToModify;
         }
 
@@ -32,10 +41,24 @@ namespace SeldomArchipelago.Items
                 Main.NewText($"Setting {item.Name} damage to 0", 255, 255, 0);
             }
         }
+
+        private int GetItemIDByName(string itemName)
+        {
+            int itemID;
+            if (ItemID.Search.TryGetId(itemName, out itemID))
+            {
+                return itemID; // Vanilla item ID found
+            }
+            else
+            {
+                return 0; //no item id found
+            }
+        }
     }
 
     public class WeaponData
     {
-        public List<int> weaponIDs { get; set; }
+        //public List<int> weaponIDs { get; set; }
+        public List<string> weaponNames { get; set; }
     }
 }
