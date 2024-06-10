@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Newtonsoft.Json;
+using SeldomArchipelago.Systems;
 
 namespace SeldomArchipelago.Items
 {
@@ -17,16 +18,20 @@ namespace SeldomArchipelago.Items
 
         private List<int> LoadWeaponIDs()
         {
+            var archipelagoSystem = ModContent.GetInstance<ArchipelagoSystem>();
+            long weaponClass = archipelagoSystem.getWeaponClass();
             var jsonData = ModContent.GetInstance<SeldomArchipelago>().GetFileBytes("weapons.json");
             var weaponData = JsonConvert.DeserializeObject<WeaponData>(System.Text.Encoding.UTF8.GetString(jsonData));
-            //WeaponIDsToModify = weaponData.weaponIDs;
             WeaponIDsToModify = new List<int>();
-            foreach (var weaponName in weaponData.weaponNames)
+            if (weaponClass == (long) 0)
             {
-                int itemID = GetItemIDByName(weaponName);
-                if (itemID != 0)
+                foreach (var weaponName in weaponData.weaponNames)
                 {
-                    WeaponIDsToModify.Add(itemID);
+                    int itemID = GetItemIDByName(weaponName);
+                    if (itemID != 0)
+                    {
+                        WeaponIDsToModify.Add(itemID);
+                    }
                 }
             }
             return WeaponIDsToModify;

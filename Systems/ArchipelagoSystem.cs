@@ -17,9 +17,11 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.Social;
+using SeldomArchipelago.Items;
 
 namespace SeldomArchipelago.Systems
 {
+
     // TODO Use a separate class for data and logic
     public class ArchipelagoSystem : ModSystem
     {
@@ -34,6 +36,7 @@ namespace SeldomArchipelago.Systems
         List<string> goals = new List<string>();
         bool victory = false;
         int slot = 0;
+        long weaponClass;
 
         public override void LoadWorldData(TagCompound tag)
         {
@@ -96,6 +99,7 @@ namespace SeldomArchipelago.Systems
                 deathlink.OnDeathLinkReceived += ReceiveDeathlink;
             }
 
+            weaponClass = ((long)success.SlotData["weaponclass"]);
             slot = success.Slot;
         }
 
@@ -535,5 +539,12 @@ namespace SeldomArchipelago.Systems
             packet.Write(message);
             packet.Send();
         }
+
+        public long getWeaponClass()
+        {            
+            return weaponClass;
+        }
     }
+
+    
 }
